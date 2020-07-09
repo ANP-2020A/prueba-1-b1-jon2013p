@@ -14,23 +14,21 @@ use App\Customer;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
+Route::get('user', 'UserController@getAuthenticatedUser');
 
 Route::post('register', 'UserController@register');
 Route::post('login', 'UserController@authenticate');
-
 Route::get('product', 'ProductController@index');
-    Route::get('product/{product}', 'ProductController@show');
-    Route::post('product', 'ProductController@store');
-    Route::put('product/{product}', 'ProductController@update');
-    Route::delete('product/{product}', 'ProductController@delete');
+Route::get('product/{product}', 'ProductController@show');
 
-Route::get('customer', 'CustomerController@index');
-Route::get('customer/{customer}', 'CustomerController@show');
-Route::post('customer', 'CustomerController@store');
-Route::put('customer/{customer}', 'CustomerController@update');
-Route::delete('customer/{customer}', 'CustomerController@delete');
+Route::group(['middleware' => ['jwt.verify']], function() {
+
+    Route::post('products', 'ProductController@store');
+    Route::put('products/{product}', 'ProductController@update');
+    Route::put('products/statusChange/{product}', 'ProductController@delete');
+    Route::get('customers', 'CustomerController@index');
+    Route::get('customers/{customer}', 'CustomerController@show');
+    Route::post('customers', 'CustomerController@store');
+    Route::put('customers/{customer}', 'CustomerController@update');
+    Route::delete('customers/{customer}', 'CustomerController@delete');
+});

@@ -29,10 +29,12 @@ class ProductController extends Controller
         return response()->json($product,200) ;
     }
 
-    public function delete(Product $product)
+    public function delete($id)
     {
+        $product = Product::find($id);
+        $product->status = 'delete';
+        $product->save();
         $product->delete();
-
-        return response()->json(null,204);
+        return response()->json($product,204);
     }
 }
